@@ -13,7 +13,7 @@ You may be wondering: *"why this bot exist?"*, *"why do you think it's useful om
 This bot currently only supports [Fluent Icons](https://github.com/microsoft/fluentui-system-icons), at least for now.
 
 # To-do
-[ ] Better caching
-[ ] Better embedding
-[ ] Add [Material Icons](https://github.com/google/material-desgin-icons)
-[ ] Optimize the code
+- [ ] Better caching
+- [ ] Better embedding
+- [ ] Add [Material Icons](https://github.com/google/material-desgin-icons)
+- [ ] Optimize the code
