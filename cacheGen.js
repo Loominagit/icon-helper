@@ -1,18 +1,16 @@
+/*
+    cacheGen.js
+
+    The main idea of this script is to cache the list of icons so you don't have to request
+    to the git tree everytime you start up the bot. It's also useful to prevent rate limiting.
+*/
+
 const fs = require('node:fs');
 const fetch = require('node-fetch');
 
-if (!fs.existsSync('./.cache')) fs.mkdirSync('./.cache/');
+const RATE_LIMIT = 3600;
 
-// eslint-disable-next-line no-unused-vars
-const downloadFile = async (url, path) => {
-	const result = await fetch(url);
-	const fileStream = fs.createWriteStream(path);
-	await new Promise((resolve, reject) => {
-		result.body.pipe(fileStream);
-		result.body.on('error', reject);
-		fileStream.on('finish', resolve);
-	});
-};
+if (!fs.existsSync('./.cache')) fs.mkdirSync('./.cache/');
 
 module.exports = {
     async generateFluentTreeCache () {
@@ -20,12 +18,12 @@ module.exports = {
         if (fs.existsSync('./.cache/lfr')) {
             const time = fs.readFileSync('./.cache/lfr');
             const diff = Math.floor((Date.now() - Number(time)) / 1000);
-            if (diff < 3600) {
-                console.log(`The fluent cache has been generated ${diff} seconds ago, no need to generate new cache!`);
+            if (diff < RATE_LIMIT) {
+                console.log(`The FluentIcons cache has been generated ${diff} seconds ago, no need to generate new cache.`);
                 return 1;
             }
         } else {
-            console.log('Generating new and updated cache...');
+            console.log('Building new FluentIcons cache...');
         }
 
         console.log('Retrieving the Fluent Icons root tree...');
@@ -33,29 +31,30 @@ module.exports = {
         const rootTreeJSON = await rootTree.json();
     
         console.log('Looking for assets directory...');
-        for (const e of rootTreeJSON) {
-            if (e.path === 'assets') {
-                console.log('Downloading assets directory tree...');
 
-                // Since GitHub doesn't allow listing more than 1,000 files,
-                // we need to use the git tree to retrieve ALL the icons name.
+        // The reason why I am using for loop to look through
+        const index = rootTreeJSON.find(value => value.path === 'assets');
+        if (index) {
+            console.log('Downloading assets directory tree...');
 
-                const assetsTree = await fetch(e.git_url);
-                //console.log(assetsTree);
-                const assetsTreeJSON = (await assetsTree.json()).tree;
+            // Since GitHub doesn't allow listing more than 1,000 files,
+            // we need to use the git tree to retrieve ALL the icons name.
 
-                // We only need the names because we are using the GitHub listing later on.
-                const iconNames = [];
-                for (const ic of assetsTreeJSON) {
-                    iconNames.push(ic.path);
-                }
+            const assetsTree = await fetch(rootTreeJSON[index].git_url);
+            //console.log(assetsTree);
+            const assetsTreeJSON = (await assetsTree.json()).tree;
 
-                fs.writeFileSync('./.cache/fluent.json', JSON.stringify(iconNames));
-                fs.writeFileSync('./.cache/lfr', Date.now().toString());
-
-                console.log('Done!');
-                return 0;
+            // We only need the names because we are using the GitHub listing later on.
+            const iconNames = [];
+            for (const ic of assetsTreeJSON) {
+                iconNames.push(ic.path);
             }
+
+            fs.writeFileSync('./.cache/fluent.json', JSON.stringify(iconNames));
+            fs.writeFileSync('./.cache/lfr', Date.now().toString());
+
+            console.log('Done!');
+            return 0;
         }
         console.log('Directory not found. Please contact the developer.');
     }

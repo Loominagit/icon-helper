@@ -41,54 +41,55 @@ module.exports = {
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
 		const variant = interaction.options.getString('variant');
-		for (const name of assetsJSON) {
-			if (name === query) {
-				// eslint-disable-next-line no-unused-vars
-				const blobs = await fetch(`https://api.github.com/repos/microsoft/fluentui-system-icons/contents/assets/${query}/SVG`);
-				const blobsJSON = await blobs.json();
+		
+		const index = assetsJSON.find(value => value.name === query);
 
-				const variantFiltered = blobsJSON.filter(e => e.name.endsWith(`${variant}.svg`));
-				const largestSVGPossible = variantFiltered[variantFiltered.length-1];
+		if (index) {
+			// eslint-disable-next-line no-unused-vars
+			const blobs = await fetch(`https://api.github.com/repos/microsoft/fluentui-system-icons/contents/assets/${query}/SVG`);
+			const blobsJSON = await blobs.json();
 
-				// download the svg
-				await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
+			const variantFiltered = blobsJSON.filter(e => e.name.endsWith(`${variant}.svg`));
+			const largestSVGPossible = variantFiltered[variantFiltered.length-1];
 
-				// change the color and the resolution
-				const svg = fs.readFileSync('./.cache/_.svg', {encoding: 'utf-8'})
-					.replace(/#212121/g, '#F1F1F1');
-				fs.writeFileSync('./.cache/_.svg', svg);
+			// download the svg
+			await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
 
-				// convert to png for preview
-				await sharp(`./.cache/_.svg`)
-					.resize(128, 128)
-					.png()
-					.toFile('./.cache/preview.png');
+			// change the color and the resolution
+			const svg = fs.readFileSync('./.cache/_.svg', {encoding: 'utf-8'})
+				.replace(/#212121/g, '#F1F1F1');
+			fs.writeFileSync('./.cache/_.svg', svg);
 
-				// eslint-disable-next-line no-unused-vars
-				const filename = `${query}_${variant}.svg`;
+			// convert to png for preview
+			await sharp(`./.cache/_.svg`)
+				.resize(128, 128)
+				.png()
+				.toFile('./.cache/preview.png');
 
-				const embed = new MessageEmbed()
-					.setTitle(query)
-					.setImage('attachment://preview.png');
+			// eslint-disable-next-line no-unused-vars
+			const filename = `${query}_${variant}.svg`;
 
-				const body = {
-					embeds: [embed],
-					files: [
-						new MessageAttachment('./.cache/preview.png', 'preview.png')
-					]
-				};
+			const embed = new MessageEmbed()
+				.setTitle(query)
+				.setImage('attachment://preview.png');
 
-				if (svg.length > 1018) {
-					body.files.push(new MessageAttachment('./.cache/_.svg', filename));
-					embed.setDescription('Due to how large the SVG is, we provide you a SVG attachment instead.');
-				} else
-					embed.addField('SVG Text', `\`\`\`\n${svg}\n\`\`\` `);
+			const body = {
+				embeds: [embed],
+				files: [
+					new MessageAttachment('./.cache/preview.png', 'preview.png')
+				]
+			};
 
-				await interaction.reply(body);
-				return 0;
-			}
-			
+			if (svg.length > 1018) {
+				body.files.push(new MessageAttachment('./.cache/_.svg', filename));
+				embed.setDescription('Due to how large the SVG is, we provide you a SVG attachment instead.');
+			} else
+				embed.addField('SVG Text', `\`\`\`\n${svg}\n\`\`\` `);
+
+			await interaction.reply(body);
+			return 0;
 		}
+
 		await interaction.reply({
 			embeds: [new MessageEmbed()
 				.setTitle('Not found')
