@@ -35,54 +35,56 @@ module.exports = {
 				{name: 'Filled', value: 'filled'}
 				)
 		),
-		
+
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
 		const variant = interaction.options.getString('variant');
 		
-		const index = assetsJSON.find(value => value.name === query);
-
-		if (index) {
+		if (assetsJSON.find(name => name === query)) {
+			// fetch the blobs!
 			const blobs = await fetch(`https://api.github.com/repos/microsoft/fluentui-system-icons/contents/assets/${query}/SVG`);
 			const blobsJSON = await blobs.json();
 
+			// get the variatns
 			const variantFiltered = blobsJSON.filter(e => e.name.endsWith(`${variant}.svg`));
+
+			// pick the largest SVG possible because why not?
 			const largestSVGPossible = variantFiltered[variantFiltered.length-1];
 
+			// i used unix time-based naming because for some reason
+			// sharp renders the previous found image :/
+			// if anyone has a better solution, you can submit a PR :D
+			const svgFilename = `./.cache/${Date.now()}.svg`;
+
 			// download the svg
-			await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
+			await downloadFile(largestSVGPossible.download_url, svgFilename);
 
 			// change the color to white grey-ish
-			const svg = fs.readFileSync('./.cache/_.svg', {encoding: 'utf-8'})
+			const svg = fs.readFileSync(svgFilename, {encoding: 'utf-8'})
 				.replace(/#212121/g, '#F1F1F1');
-			fs.writeFileSync('./.cache/_.svg', svg);
+			fs.writeFileSync(svgFilename, svg);
 
-			// convert to png for preview
-			await sharp(`./.cache/_.svg`)
-				.resize(128, 128)
-				.png()
-				.toFile('./.cache/preview.png');
+			// so that would be 'access_hour_24_filled'
+			const filename = largestSVGPossible.name.slice(10);
 
-			const filename = `${query}_${variant}.svg`;
-
-			const embed = new MessageEmbed()
-				.setTitle(query)
-				.setImage('attachment://preview.png');
-
-			const body = {
-				embeds: [embed],
+			await interaction.reply({
+				embeds: [new MessageEmbed()
+					.setTitle(query)
+					.setImage('attachment://preview.png')],
 				files: [
-					new MessageAttachment('./.cache/preview.png', 'preview.png')
+					new MessageAttachment(
+						await sharp(svgFilename)
+							.resize(128, 128)
+							.png()
+							.toBuffer()
+						, 'preview.png'),
+					new MessageAttachment(svgFilename, filename)
 				]
-			};
+			});
 
-			if (svg.length > 1018) {
-				body.files.push(new MessageAttachment('./.cache/_.svg', filename));
-				embed.setDescription('Due to how large the SVG is, we provide you a SVG attachment instead.');
-			} else
-				embed.addField('SVG Text', `\`\`\`\n${svg}\n\`\`\` `);
+			// delete the temp svg file
+			fs.rmSync(svgFilename);
 
-			await interaction.reply(body);
 			return 0;
 		}
 
