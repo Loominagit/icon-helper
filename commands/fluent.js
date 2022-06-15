@@ -55,7 +55,7 @@ module.exports = {
 			// download the svg
 			await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
 
-			// change the color and the resolution
+			// change the color to white grey-ish
 			const svg = fs.readFileSync('./.cache/_.svg', {encoding: 'utf-8'})
 				.replace(/#212121/g, '#F1F1F1');
 			fs.writeFileSync('./.cache/_.svg', svg);
