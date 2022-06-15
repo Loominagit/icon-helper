@@ -35,7 +35,7 @@ module.exports = {
 				{name: 'Filled', value: 'filled'}
 				)
 		),
-	// eslint-disable-next-line no-unused-vars
+		
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
 		const variant = interaction.options.getString('variant');
