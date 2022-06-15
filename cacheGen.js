@@ -33,14 +33,14 @@ module.exports = {
         console.log('Looking for assets directory...');
 
         // The reason why I am using for loop to look through
-        const index = rootTreeJSON.find(value => value.path === 'assets');
-        if (index) {
+        const dir = rootTreeJSON.find(value => value.path === 'assets');
+        if (dir) {
             console.log('Downloading assets directory tree...');
 
             // Since GitHub doesn't allow listing more than 1,000 files,
             // we need to use the git tree to retrieve ALL the icons name.
 
-            const assetsTree = await fetch(rootTreeJSON[index].git_url);
+            const assetsTree = await fetch(dir.git_url);
             //console.log(assetsTree);
             const assetsTreeJSON = (await assetsTree.json()).tree;
 
