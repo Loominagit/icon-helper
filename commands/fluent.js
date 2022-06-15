@@ -3,10 +3,8 @@ const { MessageAttachment, MessageEmbed } = require('discord.js');
 const fs = require('node:fs');
 const fetch = require('node-fetch');
 const assetsJSON = require('../.cache/fluent.json');
-// eslint-disable-next-line no-unused-vars
 const sharp = require('sharp');
 
-// eslint-disable-next-line no-unused-vars
 const downloadFile = async (url, path) => {
 	const result = await fetch(url);
 	fs.writeFileSync(path, 'dummy');
@@ -45,7 +43,6 @@ module.exports = {
 		const index = assetsJSON.find(value => value.name === query);
 
 		if (index) {
-			// eslint-disable-next-line no-unused-vars
 			const blobs = await fetch(`https://api.github.com/repos/microsoft/fluentui-system-icons/contents/assets/${query}/SVG`);
 			const blobsJSON = await blobs.json();
 
@@ -66,7 +63,6 @@ module.exports = {
 				.png()
 				.toFile('./.cache/preview.png');
 
-			// eslint-disable-next-line no-unused-vars
 			const filename = `${query}_${variant}.svg`;
 
 			const embed = new MessageEmbed()
