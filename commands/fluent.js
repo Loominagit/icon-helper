@@ -49,27 +49,42 @@ module.exports = {
 
 				const variantFiltered = blobsJSON.filter(e => e.name.endsWith(`${variant}.svg`));
 				const largestSVGPossible = variantFiltered[variantFiltered.length-1];
-				//console.log(variantFiltered);
 
-				const filename = `${query}_${variant}.svg`;
-				// eslint-disable-next-line no-unused-vars
-				const svg = await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
-				const png = await sharp(`../.cache/_.svg`)
+				// download the svg
+				await downloadFile(largestSVGPossible.download_url, './.cache/_.svg');
+
+				// change the color and the resolution
+				const svg = fs.readFileSync('./.cache/_.svg', {encoding: 'utf-8'})
+					.replace(/#212121/g, '#F1F1F1');
+				fs.writeFileSync('./.cache/_.svg', svg);
+
+				// convert to png for preview
+				await sharp(`./.cache/_.svg`)
+					.resize(128, 128)
 					.png()
-					.toBuffer();
-				
+					.toFile('./.cache/preview.png');
 
+				// eslint-disable-next-line no-unused-vars
+				const filename = `${query}_${variant}.svg`;
 
-				await interaction.reply({
-					embeds: [new MessageEmbed()
-						.setTitle(query)
-						.setDescription('Download the svg file above!')
-						.setImage('attachment://preview.png')
-					], files: [
-						new MessageAttachment('./.cache/_.svg', filename),
-						new MessageAttachment(png, 'preview.png')
+				const embed = new MessageEmbed()
+					.setTitle(query)
+					.setImage('attachment://preview.png');
+
+				const body = {
+					embeds: [embed],
+					files: [
+						new MessageAttachment('./.cache/preview.png', 'preview.png')
 					]
-				});
+				};
+
+				if (svg.length > 1018) {
+					body.files.push(new MessageAttachment('./.cache/_.svg', filename));
+					embed.setDescription('Due to how large the SVG is, we provide you a SVG attachment instead.');
+				} else
+					embed.addField('SVG Text', `\`\`\`\n${svg}\n\`\`\` `);
+
+				await interaction.reply(body);
 				return 0;
 			}
 			
