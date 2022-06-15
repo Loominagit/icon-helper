@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Icon packs
+icons/fluentui-system-icons/
+icons/material-design-icons/
