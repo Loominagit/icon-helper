@@ -28,7 +28,7 @@ const streamFinished = promisify(stream.finished);
 
 // For example: your download stopped at 'Building', then you type 'Building' on the variable.
 // Please note that the variable is case-sensitive.
-const fluent_startFromThisIcon = 'SIM';
+const fluent_startFromThisIcon = 'Arrow Reply Down';
 
 // The icon packs that you want to download
 // Can be 'fluent', 'material', and 'all'
@@ -144,15 +144,25 @@ const setHeader = (packName, github_link) => {
             const blobPath = path.join(__dirname, 'icons', 'fluent-icons', name);
             if (!fs.existsSync(blobPath)) fs.mkdirSync(blobPath, { recursive: true });
 
-            download(downloadURL, path.join(blobPath, blobFile))
+            const outPath = path.join(blobPath, blobFile);
+            download(downloadURL, outPath)
+                .then(() => {
+                    const svg = fs.readFileSync(outPath, {encoding: 'utf-8'})
+                        .replace(/#212121/g, '#F1F1F1');
+                    fs.writeFileSync(outPath, svg);
+                })
                 .catch(err => {
+                    //const fluent_startFromThisIcon
                     progress.stop();
                     console.log('    > IPDL only downloaded some of the icons due to this following error:');
                     console.log('    > ' + err);
                     console.log();
-                    console.log('    > You can continue the download by editing `fluent_startFromThisIcon` variable in this script.');
+                    console.log('    > You can continue the download by editing this script file and replace line 31 with:');
+                    console.log(`    > const fluent_startFromThisIcon = '${name}';`);
+                    console.log();
                     console.log('    > Then, re-run this script.');
-                    return -1;
+                    console.log();
+                    throw new Error('Download stopped with error.');
                 });
         }
         progress.increment();

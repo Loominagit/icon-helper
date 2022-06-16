@@ -1,20 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageAttachment, MessageEmbed } = require('discord.js');
 const fs = require('node:fs');
-const fetch = require('node-fetch');
-const assetsJSON = require('../.cache/fluent.json');
+const path = require('node:path');
 const sharp = require('sharp');
 
-const downloadFile = async (url, path) => {
-	const result = await fetch(url);
-	fs.writeFileSync(path, 'dummy');
-	const fileStream = fs.createWriteStream(path);
-	return new Promise((resolve, reject) => {
-		result.body.pipe(fileStream);
-		result.body.on('error', reject);
-		fileStream.on('finish', resolve);
-	});
-};
+const fluentIconsDir = fs.readdirSync(path.join(__dirname, '..', 'icons', 'fluent-icons'));
 	
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -40,66 +30,38 @@ module.exports = {
 		const query = interaction.options.getString('query');
 		const variant = interaction.options.getString('variant');
 		
-		if (assetsJSON.find(name => name === query)) {
-			// fetch the blobs!
-			const blobs = await fetch(`https://api.github.com/repos/microsoft/fluentui-system-icons/contents/assets/${query}/SVG`);
-			const blobsJSON = await blobs.json();
-
-			// get the variatns
-			const variantFiltered = blobsJSON.filter(e => e.name.endsWith(`${variant}.svg`));
-
-			// pick the largest SVG possible because why not?
-			const largestSVGPossible = variantFiltered[variantFiltered.length-1];
-
-			// i used unix time-based naming because for some reason
-			// sharp renders the previous found image :/
-			// if anyone has a better solution, you can submit a PR :D
-			const svgFilename = `./.cache/${Date.now()}.svg`;
-
-			// download the svg
-			await downloadFile(largestSVGPossible.download_url, svgFilename);
-
-			// change the color to white grey-ish
-			const svg = fs.readFileSync(svgFilename, {encoding: 'utf-8'})
-				.replace(/#212121/g, '#F1F1F1');
-			fs.writeFileSync(svgFilename, svg);
-
-			// so that would be 'access_hour_24_filled'
-			const filename = largestSVGPossible.name.slice(10);
+		if (fluentIconsDir.find(name => name === query)) {
+			
+			const svg = path.join(__dirname, '..', 'icons', 'fluent-icons', query, variant + '.svg');
+			const uploadFilename = `${query.toLowerCase().replace(' ', '_')}_${variant}.svg`;
 
 			await interaction.reply({
 				embeds: [new MessageEmbed()
 					.setTitle(query)
-					.setImage('attachment://preview.png')],
+					.setImage('attachment://preview.png')
+					.setColor('#F1F1F1')
+				],
 				files: [
 					new MessageAttachment(
-						await sharp(svgFilename)
+						await sharp(svg)
 							.resize(128, 128)
 							.png()
 							.toBuffer()
 						, 'preview.png'),
-					new MessageAttachment(svgFilename, filename)
+					new MessageAttachment(svg, uploadFilename)
 				]
 			});
-
-			// delete the temp svg file
-			fs.rmSync(svgFilename);
 
 			return 0;
 		}
 
-		await interaction.reply({
-			embeds: [new MessageEmbed()
-				.setTitle('Not found')
-				.setDescription('Huh, I don\'t see what you mean here...')
-			]
-		});
+		await interaction.reply('I don\'t see what you mean here...');
 	},
 	async autocomplete(interaction) {
 		const focusedOption = interaction.options.getFocused(true);
 		let choices;
 		if (focusedOption.name === 'query') {
-			choices = assetsJSON;
+			choices = fluentIconsDir;
 		}
 
 		const filtered = choices.filter(choice => choice.toLowerCase().match(focusedOption.value)).slice(0, 24);

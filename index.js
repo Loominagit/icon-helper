@@ -42,7 +42,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('ready', async () => {
-	console.log('Client ready. Generating caches...');
+	console.log('Client ready.');
 });
 
 client.login(process.env.TOKEN);
