@@ -150,6 +150,7 @@ const setHeader = (packName, github_link) => {
             const outPath = path.join(blobPath, blobFile);
             download(downloadURL, outPath)
                 .then(() => {
+                    // This will change the SVG color to white.
                     const svg = fs.readFileSync(outPath, {encoding: 'utf-8'})
                         .replace(/#212121/g, '#F1F1F1');
                     fs.writeFileSync(outPath, svg);
