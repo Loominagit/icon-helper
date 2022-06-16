@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { MessageAttachment } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const sharp = require('sharp');
@@ -36,11 +36,7 @@ module.exports = {
 			const uploadFilename = `${query.toLowerCase().replace(' ', '_')}_${variant}.svg`;
 
 			await interaction.reply({
-				embeds: [new MessageEmbed()
-					.setTitle(query)
-					.setImage('attachment://preview.png')
-					.setColor('#F1F1F1')
-				],
+				content: `**${query}** from Fluent Icons.`,
 				files: [
 					new MessageAttachment(
 						await sharp(svg)
