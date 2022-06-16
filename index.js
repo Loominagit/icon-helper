@@ -5,9 +5,9 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const sleep = async ms => new Promise(resolve => setTimeout(resolve, ms));
-
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
 client.commands = new Collection();
 
@@ -54,11 +54,9 @@ client.on('ready', async () => {
 	console.log('Client ready.');
 	console.log('Setting up presence...');
 	setInterval(async () => {
-		for (const presence of presences) {
-			client.user.setActivity(presence[0], {type: presence[1]});
-			await sleep(60000);
-		}
-	}, 0);
+		const currentPresence = presences[random(0, presences.length)];
+		client.user.setActivity(currentPresence[0], currentPresence[1]);
+	}, 60000);
 	console.log('Done.');
 });
 
