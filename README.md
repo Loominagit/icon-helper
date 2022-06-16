@@ -1,5 +1,4 @@
-# Icon Helper
-*A Discord bot made specifically to search icons.*
+<img src="/.github/assets/header.png" width=500>
 
 <a href="https://discord.com/api/oauth2/authorize?client_id=986299318476632124&permissions=274878015488&scope=bot%20applications.commands"><img src="/.github/assets/add%20bot%20button.png" width=150></a>
 <a href="https://saweria.co/loominatrx"><img src="/.github/assets/support%20button.png" width=150></a>
