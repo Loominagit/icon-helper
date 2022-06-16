@@ -16,7 +16,10 @@ module.exports = {
                 .addField('Source code', 'https://github.com/Loominagit/icon-helper', true)
                 .addField('Add to your server', '[Click this blue text!](https://discord.com/api/oauth2/authorize?client_id=986299318476632124&permissions=274878015488&scope=bot%20applications.commands)', true)
                 .setThumbnail('attachment://profile.png')
-                .setFooter({'text': 'Developed by loominatrx with love.', 'iconURL': ''})
+                .setFooter({
+                    'text': 'Developed by loominatrx with ♥️.', 
+                    'iconURL': 'https://cdn.discordapp.com/avatars/552829346381955078/16cc88aaf3b4cb5d0df969a4b9ff1cbf.png'
+                })
             ],
             files: [
                 new MessageAttachment(path.join(__dirname, '..', 'profile.png'))
