@@ -2,7 +2,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Intents, Collection } = require('discord.js');
 const dotenv = require('dotenv');
-const cacheGen = require('./cacheGen.js');
 
 dotenv.config();
 
@@ -44,7 +43,6 @@ client.on('interactionCreate', async interaction => {
 
 client.on('ready', async () => {
 	console.log('Client ready. Generating caches...');
-	await cacheGen.generateFluentTreeCache();
 });
 
 client.login(process.env.TOKEN);

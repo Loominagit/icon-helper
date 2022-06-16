@@ -3,6 +3,8 @@
 
     The main idea of this script is to retrieve the required icon packs so the bot don't have to
     fetch HTTP requests everytime you use the slash commands. It's also useful to prevent rate limiting.
+
+    If you somehow lose your icons folder, you can download them using this script.
 */
 
 const fs = require('node:fs');
