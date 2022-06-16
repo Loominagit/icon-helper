@@ -9,7 +9,7 @@ const fluentIconsDir = fs.readdirSync(path.join(__dirname, '..', 'icons', 'fluen
 module.exports = {
 	data: new SlashCommandBuilder()
 	.setName('fluent')
-	.setDescription('Search for Microsoft\'s Fluent Icons!')
+	.setDescription('Search for Microsoft\'s Fluent Icons.')
 	.addStringOption(option =>
 		option.setName('query')
 			.setDescription('The icon that you want to find.')
