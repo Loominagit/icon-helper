@@ -36,7 +36,6 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	} else if (interaction.isAutocomplete()) {
-		if (!command.autocomplete) return;
 		await command.autocomplete(interaction);
 	}
 });
