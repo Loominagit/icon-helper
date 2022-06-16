@@ -14,6 +14,7 @@ Well, to answer the question, I need to tell you a story. While I am new designi
 - You can find different variant from 1 icon
 
 # Hosting the bot
+NOTE: This tutorial assumes that you have [node.js](https://nodejs.org) installed in your device.
 1. Clone the repo using git
    ```
    $ git clone https://github.com/Loominagit/icon-helper
