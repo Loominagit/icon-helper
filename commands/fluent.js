@@ -64,7 +64,7 @@ module.exports = {
 			choices = fluentIconsDir;
 		}
 
-		const filtered = choices.filter(choice => choice.toLowerCase().match(focusedOption.value)).slice(0, 24);
+		const filtered = choices.filter(choice => choice.toLowerCase().match(focusedOption.value) || choice.match(focusedOption.value)).slice(0, 24);
 		
 		await interaction.respond(
 			filtered.map(choice => ({name: choice, value: choice}))
