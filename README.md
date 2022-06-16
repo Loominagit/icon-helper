@@ -1,4 +1,4 @@
-# icon-helper
+# Icon Helper
 *A Discord bot made specifically to search icons.*
 
 <a href="https://discord.com"><img src="/.github/assets/add%20bot%20button.png" width=150></a>
