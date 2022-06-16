@@ -31,7 +31,7 @@ const streamFinished = promisify(stream.finished);
 
 // For example: your download stopped at 'Building', then you type 'Building' on the variable.
 // Please note that the variable is case-sensitive.
-const fluent_startFromThisIcon = 'Arrow Reply Down';
+const fluent_startFromThisIcon = '';
 
 // The icon packs that you want to download
 // Can be 'fluent', 'material', and 'all'
@@ -46,17 +46,17 @@ const downloadIcons = 'all';
 
 // progress bar
 const progress = new cliProgress.SingleBar({
-    format: colors.white('    {bar}') + ' | {percentage}% | {value}/{total} icons downloaded.',
+    format: '    > Downloading {icon}...\n      | ' + colors.white('{bar}') + ' | {percentage}% | {value}/{total} icons downloaded.',
     hideCursor: true
 }, cliProgress.Presets.shades_classic);
 
 const download = async (url, outpath) => {
-    const writer = fs.createWriteStream(outpath);
     return axios({
         method: 'get',
         url: url,
         responseType: 'stream'
     }).then(response => {
+        const writer = fs.createWriteStream(outpath);
         response.data.pipe(writer);
         return streamFinished(writer);
     });
@@ -137,10 +137,14 @@ const setHeader = (packName, github_link) => {
             }
         })).data;
 
+        // update current downloading icon
+        progress.increment(0, {icon: name});
+
         // get the variatns
         const variants = blobs.slice(blobs.length-2); // will retrieve both regular and filled variant with the highest resolution possible.
 
         for (const blob of variants) {
+            
             const blobFile = blob.name.replace(/^ic_fluent_([a-z_]+)_([0-9]+)_/g, '');
             const downloadURL = blob.download_url;
 
@@ -158,15 +162,16 @@ const setHeader = (packName, github_link) => {
                 .catch(err => {
                     //const fluent_startFromThisIcon
                     progress.stop();
-                    console.log('    > IPDL only downloaded some of the icons due to this following error:');
-                    console.log('    > ' + err);
+                    console.log('    > IPDL only downloaded some of the icons due to the script detected some error');
+                    console.log('      while downloading.');
                     console.log();
                     console.log('    > You can continue the download by editing this script file and replace line 31 with:');
                     console.log(`    > const fluent_startFromThisIcon = '${name}';`);
                     console.log();
                     console.log('    > Then, re-run this script.');
                     console.log();
-                    throw new Error('Download stopped with error.');
+                    fs.appendFileSync(path.join(__dirname, 'error.log'), err.toString());
+                    return -1;
                 });
         }
         progress.increment();
