@@ -58,7 +58,7 @@ client.on('ready', async () => {
 	console.log('Setting up presence...');
 
 	setPresence();
-	setInterval(setPresence , 60000);
+	setInterval(setPresence , 15 * 60000);
 
 	console.log('Done.');
 });
