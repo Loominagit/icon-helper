@@ -1,6 +1,9 @@
 # icon-helper
 *A Discord bot made specifically to search icons.*
 
+[![Add this bot to your Discord server](/.github/assets/add%20bot%20button.png)](https://google.com)
+[![Support me on Saweria (Indonesia only)](/.github/assets/support%20button.png)](https://saweria.co/loominatrx)
+
 # The main idea
 You may be wondering: *"why this bot exist?"*, *"why do you think it's useful omegalul"*. Well, to answer the question, I need to tell you a story. While I am new designing in Figma, I find copy and pasting icons between drafts really annoying. Thus I lost motivation on designing UI because of it. I think I found a solution. I had a thought that I can find icons through Discord, and copy the icon from it without having a hassle switching between drafts. I spent a day to implement this bot, and here it is.
 
