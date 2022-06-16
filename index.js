@@ -59,6 +59,7 @@ client.on('ready', async () => {
 			await sleep(60000);
 		}
 	}, 0);
+	console.log('Done.');
 });
 
 client.login(process.env.TOKEN);
