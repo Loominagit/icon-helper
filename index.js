@@ -7,18 +7,16 @@ dotenv.config();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 const presences = [
-	['loominatrx coding me', 'WATCHING'],
-	['you copy and pasting SVG to Figma', 'WATCHING'],
-	['you using /fluent', 'WATCHING'],
-	['some anime', 'WATCHING']
+	{activities: [{name: 'loominatrx coding me', type: 'WATCHING'}]},
+	{activities: [{name: 'you copy and pasting icons to figma', type: 'WATCHING'}]},
+	{activities: [{name: 'lists of icon packs', type: 'WATCHING'}]},
+	{activities: [{name: 'discord.js tutorial', type: 'WATCHING'}]},
 ];
 
 for (const file of commandFiles) {
@@ -50,13 +48,18 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
+const setPresence = () => {
+	const currentPresence = presences[Math.floor(Math.random()*(presences.length-1))];
+	client.user.setPresence(currentPresence);
+};
+
 client.on('ready', async () => {
 	console.log('Client ready.');
 	console.log('Setting up presence...');
-	setInterval(async () => {
-		const currentPresence = presences[random(0, presences.length)];
-		client.user.setActivity(currentPresence[0], currentPresence[1]);
-	}, 60000);
+
+	setPresence();
+	setInterval(setPresence , 60000);
+
 	console.log('Done.');
 });
 
