@@ -78,7 +78,7 @@ const setHeader = (packName, github_link) => {
     process.stdout.write('\033c');
     console.log(`
     //////////////////////////////////////////////////////
-    // Icon pack downloader (IPDL)////////////////////////
+    // Icon pack downloader (IPDL) ///////////////////////
     //////////////////////////////////////////////////////
 
     // Currently downloading: ${packName}
