@@ -11,7 +11,7 @@ module.exports = {
             embeds: [
             new MessageEmbed()
                 .setTitle('About me')
-                .setDescription('Icon Helper is a Discord bot that is created specifically to search icons.')
+                .setDescription('Icon Helper is a Discord bot made specifically to search icons.')
                 .setColor('#F1F1F1')
                 .addField('Supported Icon Packs', '- Microsoft Fluent Icons (`/fluent`)')
                 .addField('Source code', 'https://github.com/Loominagit/icon-helper', true)
