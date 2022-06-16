@@ -5,12 +5,21 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const sleep = async ms => new Promise(resolve => setTimeout(resolve, ms));
+
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+const presences = [
+	['loominatrx coding me', 'WATCHING'],
+	['you copy and pasting SVG to Figma', 'WATCHING'],
+	['you using /fluent', 'WATCHING'],
+	['some anime', 'WATCHING']
+];
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
@@ -43,6 +52,13 @@ client.on('interactionCreate', async interaction => {
 
 client.on('ready', async () => {
 	console.log('Client ready.');
+	console.log('Setting up presence...');
+	setInterval(async () => {
+		for (const presence of presences) {
+			client.user.setActivity(presence[0], {type: presence[1]});
+			await sleep(60000);
+		}
+	}, 0);
 });
 
 client.login(process.env.TOKEN);
