@@ -16,7 +16,6 @@ const stream = require('node:stream');
 const path = require('node:path');
 const dotenv = require('dotenv');
 
-const colors = require('ansi-colors');
 const cliProgress = require('cli-progress');
 
 const { promisify } = require('node:util');
@@ -46,7 +45,7 @@ const downloadIcons = 'all';
 
 // progress bar
 const progress = new cliProgress.SingleBar({
-    format: '    > Downloading {icon}...\n      | ' + colors.white('{bar}') + ' | {percentage}% | {value}/{total} icons downloaded.',
+    format: '    > Downloading {icon}... | Progress: {percentage}%',
     hideCursor: true
 }, cliProgress.Presets.shades_classic);
 
@@ -145,7 +144,7 @@ const setHeader = (packName, github_link) => {
 
         for (const blob of variants) {
             
-            const blobFile = blob.name.replace(/^ic_fluent_([a-z_]+)_([0-9]+)_/g, '');
+            const blobFile = blob.name.replace(/^ic_fluent_([a-z_0-9]+)_([0-9]+)_/g, '');
             const downloadURL = blob.download_url;
 
             const blobPath = path.join(__dirname, 'icons', 'fluent-icons', name);
@@ -165,13 +164,13 @@ const setHeader = (packName, github_link) => {
                     console.log('    > IPDL only downloaded some of the icons due to the script detected some error');
                     console.log('      while downloading.');
                     console.log();
-                    console.log('    > You can continue the download by editing this script file and replace line 31 with:');
+                    console.log('    > You can continue the download by editing this script file and replace line 34 with:');
                     console.log(`    > const fluent_startFromThisIcon = '${name}';`);
                     console.log();
                     console.log('    > Then, re-run this script.');
                     console.log();
                     fs.appendFileSync(path.join(__dirname, 'error.log'), err.toString());
-                    return -1;
+                    process.exit();
                 });
         }
         progress.increment();
