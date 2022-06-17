@@ -164,7 +164,7 @@ const setHeader = (packName, github_link) => {
                     console.log('    > IPDL only downloaded some of the icons due to the script detected some error');
                     console.log('      while downloading.');
                     console.log();
-                    console.log('    > You can continue the download by editing this script file and replace line 34 with:');
+                    console.log('    > You can continue the download by editing this script file and replace line 33 with:');
                     console.log(`    > const fluent_startFromThisIcon = '${name}';`);
                     console.log();
                     console.log('    > Then, re-run this script.');
