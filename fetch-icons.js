@@ -40,7 +40,7 @@ const material_startFromThisIcon = '';
 // Can be either 'fluent', 'material', and 'all'
 // You can download multiple icon packs by assigning it to array. Example: ['fluent', 'material']
 
-const downloadIcons = 'material';
+const downloadIcons = 'all';
 
 //////////////////////////////////////////////////////
 // INITIALIZE ////////////////////////////////////////
