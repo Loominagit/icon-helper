@@ -71,7 +71,7 @@ if (!process.env.GITHUB_PERSONAL_ACCESS_TOKEN) {
     console.error('your requests / hour.');
     console.error('');
     console.error('If you don\'t know how to create Personal Access Token, visit this link:');
-    console.error('https://docs.github.com//en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token');
+    console.error('https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token');
     return -1;
 }
 
